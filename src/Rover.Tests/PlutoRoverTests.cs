@@ -59,6 +59,10 @@ namespace Rover.Tests
             string expectedFinalPosition) =>
             RunCommand(initialPosition, "L", expectedFinalPosition);
 
+        [Fact]
+        public void When_MoveOverBorder_Expect_LocationWrapped() =>
+            RunCommand("0,99,N", "F", "0,0,N");
+
         private void RunCommand(
             string initialPosition,
             string command,
