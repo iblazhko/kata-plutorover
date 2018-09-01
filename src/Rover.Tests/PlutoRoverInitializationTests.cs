@@ -20,18 +20,26 @@ namespace Rover.Tests
             exception.Should().BeNull();
         }
 
-        [Fact]
-        public void When_TryPositionRoverOutsideGrid_ExpectException()
+        [Theory]
+        [InlineData(-1, 0)]
+        [InlineData(0, -1)]
+        [InlineData(-1, -1)]
+        [InlineData(11, 5)]
+        [InlineData(5, 11)]
+        [InlineData(11, 11)]
+        public void When_TryPositionRoverOutsideTheGrid_ExpectException(int x, int y)
         {
             // Arrange
-            var pluto = new Pluto(100, 100);
+            var pluto = new Pluto(10, 10);
 
             // Act
-            var exception = Record.Exception(() => new PlutoRover(pluto, new Position(new Location(100, 0), Orientation.N)));
+            var exception = Record.Exception(() => new PlutoRover(pluto, new Position(new Location(x, y), Orientation.N)));
 
             // Assert
             exception.Should().NotBeNull();
             exception.Should().BeOfType<ArgumentOutOfRangeException>();
+            exception.Message.Should().StartWith("Rover must be located inside the Pluto");
+            exception.Message.Should().EndWith("Parameter name: initialPosition");
         }
     }
 }

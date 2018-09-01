@@ -21,6 +21,12 @@ namespace Rover.Library
 
         public PlutoRover(Pluto pluto, Position initialPosition)
         {
+            if (initialPosition.Location.X < 0 || initialPosition.Location.X >= pluto.Width ||
+                initialPosition.Location.Y < 0 || initialPosition.Location.Y >= pluto.Height)
+            {
+                throw new ArgumentOutOfRangeException(nameof(initialPosition), "Rover must be located inside the Pluto");
+            }
+
             _pluto = pluto;
             _position = initialPosition;
 
