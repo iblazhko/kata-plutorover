@@ -33,5 +33,20 @@ namespace Rover.Tests
             rover.Position.ToString()
                 .Should().Be("0,1,N");
         }
+
+        [Fact]
+        public void When_MoveBackward_Expect_PositionChanged()
+        {
+            // Arrange
+            var pluto = new Pluto(100, 100);
+            var rover = new PlutoRover(pluto, new Position("0,1,N"));
+
+            // Act
+            rover.Move("B");
+
+            // Assert
+            rover.Position.ToString()
+                .Should().Be("0,0,N");
+        }
     }
 }
