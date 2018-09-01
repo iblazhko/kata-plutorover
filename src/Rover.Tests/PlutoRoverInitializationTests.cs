@@ -57,14 +57,16 @@ namespace Rover.Tests
             exception.Message.Should().EndWith("Parameter name: pluto");
         }
 
-        [Fact]
-        public void When_PlutoHasInvalidWidth_ExpectException()
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        public void When_PlutoHasInvalidWidth_ExpectException(int invalidWidth)
         {
             // Arrange
             // N/A
 
             // Act
-            var exception = Record.Exception(() => new Pluto(0, 1));
+            var exception = Record.Exception(() => new Pluto(invalidWidth, 1));
 
             // Assert
             exception.Should().NotBeNull();
@@ -73,14 +75,16 @@ namespace Rover.Tests
             exception.Message.Should().EndWith("Parameter name: width");
         }
 
-        [Fact]
-        public void When_PlutoHasInvalidHeight_ExpectException()
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        public void When_PlutoHasInvalidHeight_ExpectException(int invalidHeight)
         {
             // Arrange
             // N/A
 
             // Act
-            var exception = Record.Exception(() => new Pluto(10, 0));
+            var exception = Record.Exception(() => new Pluto(10, invalidHeight));
 
             // Assert
             exception.Should().NotBeNull();
