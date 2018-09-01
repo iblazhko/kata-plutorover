@@ -7,24 +7,8 @@ namespace Rover.Library
 {
     public class PlutoRover
     {
-        private static readonly Option<Location> NoObstacles = Option.None<Location>();
-        private readonly Pluto _pluto;
-        private Position _position;
-        private readonly Dictionary<char, Func<Position>> _stepHandlerByCommand;
-        private readonly Dictionary<Orientation, Func<Location, Location>> _moveForward;
-        private readonly Dictionary<Orientation, Func<Location, Location>> _moveBackward;
-        private readonly Dictionary<Orientation, Orientation> _turnRight;
-        private readonly Dictionary<Orientation, Orientation> _turnLeft;
-
-        public Position Position => _position;
-        public Option<Location> ObstacleInTheWay { get; private set; }
-
-        public PlutoRover(Pluto pluto, Position initialPosition)
-        {
-            _pluto = pluto;
-            _position = initialPosition;
-
-            _stepHandlerByCommand = new Dictionary<char, Func<Position>>
+        private static readonly Dictionary<char, Func<Pluto, Position, Position>> _positionTransformerByCommand =
+            new Dictionary<char, Func<Pluto, Position, Position>>
             {
                 {'F', MoveForward},
                 {'B', MoveBackward},
@@ -32,23 +16,26 @@ namespace Rover.Library
                 {'L', TurnLeft}
             };
 
-            _moveForward = new Dictionary<Orientation, Func<Location, Location>>
+        private static readonly Dictionary<Orientation, Func<Pluto, Location, Location>> _moveForward =
+            new Dictionary<Orientation, Func<Pluto, Location, Location>>
             {
-                { Orientation.N, l => new Location(l.X, PositiveWrap(l.Y, _pluto.Width)) },
-                { Orientation.E, l => new Location(PositiveWrap(l.X, _pluto.Width), l.Y) },
-                { Orientation.S, l => new Location(l.X, NegativeWrap(l.Y, _pluto.Height)) },
-                { Orientation.W, l => new Location(NegativeWrap(l.X, _pluto.Width), l.Y) }
+                { Orientation.N, (p, l) => new Location(l.X, PositiveWrap(l.Y, p.Width)) },
+                { Orientation.E, (p, l) => new Location(PositiveWrap(l.X, p.Width), l.Y) },
+                { Orientation.S, (p, l) => new Location(l.X, NegativeWrap(l.Y, p.Height)) },
+                { Orientation.W, (p, l) => new Location(NegativeWrap(l.X, p.Width), l.Y) }
             };
 
-            _moveBackward = new Dictionary<Orientation, Func<Location, Location>>
+        private static readonly Dictionary<Orientation, Func<Pluto, Location, Location>> _moveBackward =
+            new Dictionary<Orientation, Func<Pluto, Location, Location>>
             {
-                { Orientation.N, l => new Location(l.X, NegativeWrap(l.Y, _pluto.Width)) },
-                { Orientation.E, l => new Location(NegativeWrap(l.X, _pluto.Width), l.Y) },
-                { Orientation.S, l => new Location(l.X, PositiveWrap(l.Y, _pluto.Width)) },
-                { Orientation.W, l => new Location(PositiveWrap(l.X, _pluto.Width), l.Y) }
+                { Orientation.N, (p, l) => new Location(l.X, NegativeWrap(l.Y, p.Width)) },
+                { Orientation.E, (p, l) => new Location(NegativeWrap(l.X, p.Width), l.Y) },
+                { Orientation.S, (p, l) => new Location(l.X, PositiveWrap(l.Y, p.Width)) },
+                { Orientation.W, (p, l) => new Location(PositiveWrap(l.X, p.Width), l.Y) }
             };
 
-            _turnRight = new Dictionary<Orientation, Orientation>
+        private static readonly Dictionary<Orientation, Orientation> _turnRight =
+            new Dictionary<Orientation, Orientation>
             {
                 { Orientation.N, Orientation.E },
                 { Orientation.E, Orientation.S },
@@ -56,41 +43,60 @@ namespace Rover.Library
                 { Orientation.W, Orientation.N }
             };
 
-            _turnLeft = new Dictionary<Orientation, Orientation>
+        private static readonly Dictionary<Orientation, Orientation> _turnLeft =
+            new Dictionary<Orientation, Orientation>
             {
                 { Orientation.N, Orientation.W },
                 { Orientation.W, Orientation.S },
                 { Orientation.S, Orientation.E },
                 { Orientation.E, Orientation.N }
             };
+
+        private readonly Pluto _pluto;
+        private PlutoRoverState _state;
+
+        public Position Position => _state.Position;
+        public Option<Location> ObstacleInTheWay => _state.ObstacleInTheWay;
+
+        public PlutoRover(Pluto pluto, Position initialPosition)
+        {
+            _pluto = pluto;
+            _state = new PlutoRoverState(initialPosition, Option.None<Location>());
         }
 
         public void Move(string command)
         {
-            ObstacleInTheWay = NoObstacles;
             foreach (var step in command)
             {
-                var newPosition = _stepHandlerByCommand[step]();
-
-                if (IsObstacleInTheWay(newPosition.Location))
-                {
-                    ObstacleInTheWay = Option.Some(newPosition.Location);
-                    break;
-                }
-
-                _position = newPosition;
+                _state = StepHandler(_pluto, _state, step);
+                if (_state.ObstacleInTheWay.HasValue) break;
             }
         }
 
-        private bool IsObstacleInTheWay(Location location) =>
-            _pluto.Obstacles.Any(x => x.Equals(location));
+        private static PlutoRoverState StepHandler(Pluto pluto, PlutoRoverState state, char step) =>
+            GetStateInNewPosition(pluto, state, _positionTransformerByCommand[step](pluto, state.Position));
 
-        private int NegativeWrap(int position, int size) => position > 0 ? position - 1 : size - 1;
-        private int PositiveWrap(int position, int size) => position < size - 1 ? position + 1 : 0;
+        private static PlutoRoverState GetStateInNewPosition(Pluto pluto, PlutoRoverState state, Position newPosition) =>
+            IsObstacleInTheWay(pluto, newPosition.Location)
+                ? new PlutoRoverState(state.Position, Option.Some(newPosition.Location))
+                : new PlutoRoverState(newPosition, Option.None<Location>());
 
-        private Position MoveForward() => new Position(_moveForward[_position.Orientation](_position.Location), _position.Orientation);
-        private Position MoveBackward() => new Position(_moveBackward[_position.Orientation](_position.Location), _position.Orientation);
-        private Position TurnRight() => new Position(_position.Location, _turnRight[_position.Orientation]);
-        private Position TurnLeft() => new Position(_position.Location, _turnLeft[_position.Orientation]);
+        private static bool IsObstacleInTheWay(Pluto pluto, Location location) =>
+            pluto.Obstacles.Any(x => x.Equals(location));
+
+        private static int NegativeWrap(int position, int size) => position > 0 ? position - 1 : size - 1;
+        private static int PositiveWrap(int position, int size) => position < size - 1 ? position + 1 : 0;
+
+        private static Position MoveForward(Pluto pluto, Position position) =>
+            new Position(_moveForward[position.Orientation](pluto, position.Location), position.Orientation);
+
+        private static Position MoveBackward(Pluto pluto, Position position) =>
+            new Position(_moveBackward[position.Orientation](pluto, position.Location), position.Orientation);
+
+        private static Position TurnRight(Pluto _, Position position) =>
+            new Position(position.Location, _turnRight[position.Orientation]);
+
+        private static Position TurnLeft(Pluto _, Position position) =>
+            new Position(position.Location, _turnLeft[position.Orientation]);
     }
 }
