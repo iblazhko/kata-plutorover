@@ -64,8 +64,10 @@ namespace Rover.Library
 
         public void Move(string command)
         {
-            var step = command.First();
-            _position = _stepHandlerByCommand[step]();
+            foreach (var step in command)
+            {
+                _position = _stepHandlerByCommand[step]();
+            }
         }
 
         private int NegativeWrap(int position, int size) => position > 0 ? position - 1 : size - 1;
