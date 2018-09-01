@@ -26,19 +26,8 @@ namespace Rover.Tests
         [InlineData("5,5,S", "5,4,S")]
         public void When_MoveForward_Expect_PositionChanged(
             string initialPosition,
-            string expectedFinalPosition)
-        {
-            // Arrange
-            var pluto = new Pluto(100, 100);
-            var rover = new PlutoRover(pluto, new Position(initialPosition));
-
-            // Act
-            rover.Move("F");
-
-            // Assert
-            rover.Position.ToString()
-                .Should().Be(expectedFinalPosition);
-        }
+            string expectedFinalPosition) =>
+            RunCommand(initialPosition, "F", expectedFinalPosition);
 
         [Theory]
         [InlineData("0,2,N", "0,1,N")]
@@ -47,19 +36,8 @@ namespace Rover.Tests
         [InlineData("5,5,S", "5,6,S")]
         public void When_MoveBackward_Expect_PositionChanged(
             string initialPosition,
-            string expectedFinalPosition)
-        {
-            // Arrange
-            var pluto = new Pluto(100, 100);
-            var rover = new PlutoRover(pluto, new Position(initialPosition));
-
-            // Act
-            rover.Move("B");
-
-            // Assert
-            rover.Position.ToString()
-                .Should().Be(expectedFinalPosition);
-        }
+            string expectedFinalPosition) =>
+            RunCommand(initialPosition, "B", expectedFinalPosition);
 
         [Theory]
         [InlineData("0,0,N", "0,0,E")]
@@ -68,19 +46,8 @@ namespace Rover.Tests
         [InlineData("0,0,W", "0,0,N")]
         public void When_TurnRight_Expect_OrientationChanged(
             string initialPosition,
-            string expectedFinalPosition)
-        {
-            // Arrange
-            var pluto = new Pluto(100, 100);
-            var rover = new PlutoRover(pluto, new Position(initialPosition));
-
-            // Act
-            rover.Move("R");
-
-            // Assert
-            rover.Position.ToString()
-                .Should().Be(expectedFinalPosition);
-        }
+            string expectedFinalPosition) =>
+            RunCommand(initialPosition, "R", expectedFinalPosition);
 
         [Theory]
         [InlineData("0,0,N", "0,0,W")]
@@ -89,6 +56,12 @@ namespace Rover.Tests
         [InlineData("0,0,E", "0,0,N")]
         public void When_TurnLeft_Expect_OrientationChanged(
             string initialPosition,
+            string expectedFinalPosition) =>
+            RunCommand(initialPosition, "L", expectedFinalPosition);
+
+        private void RunCommand(
+            string initialPosition,
+            string command,
             string expectedFinalPosition)
         {
             // Arrange
@@ -96,7 +69,7 @@ namespace Rover.Tests
             var rover = new PlutoRover(pluto, new Position(initialPosition));
 
             // Act
-            rover.Move("L");
+            rover.Move(command);
 
             // Assert
             rover.Position.ToString()
