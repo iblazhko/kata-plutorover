@@ -41,5 +41,21 @@ namespace Rover.Tests
             exception.Message.Should().StartWith("Rover must be located inside the Pluto");
             exception.Message.Should().EndWith("Parameter name: initialPosition");
         }
+
+        [Fact]
+        public void When_TryPositionRoverWithNoPluto_ExpectSuccess()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            var exception = Record.Exception(() => new PlutoRover(null, new Position(new Location(0, 0), Orientation.N)));
+
+            // Assert
+            exception.Should().NotBeNull();
+            exception.Should().BeOfType<ArgumentNullException>();
+            exception.Message.Should().EndWith("Parameter name: pluto");
+        }
+
     }
 }
