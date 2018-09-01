@@ -22,7 +22,8 @@ namespace Rover.Library
             _stepHandlerByCommand = new Dictionary<char, Func<Position>>
             {
                 {'F', MoveForward},
-                {'B', MoveBackward}
+                {'B', MoveBackward},
+                {'R', TurnRight}
             };
 
             _moveForward = new Dictionary<Orientation, Func<Position, Position>>
@@ -50,5 +51,6 @@ namespace Rover.Library
 
         private Position MoveForward() => _moveForward[_position.Orientation](_position);
         private Position MoveBackward() => _moveBackward[_position.Orientation](_position);
+        private Position TurnRight() => new Position(_position.X, _position.Y, Orientation.E);
     }
 }
