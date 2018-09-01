@@ -20,6 +20,7 @@ namespace Rover.Library
         {
             if (width <=0) throw new ArgumentOutOfRangeException(nameof(width), "Width must be a positive number");
             if (height <=0) throw new ArgumentOutOfRangeException(nameof(height), "Height must be a positive number");
+            if (obstacles == null) throw new ArgumentNullException(nameof(obstacles));
 
             Width = width;
             Height = height;
