@@ -22,10 +22,16 @@ namespace Rover.Library
         public PlutoRover(Pluto pluto, Position initialPosition)
         {
             if (pluto == null) throw new ArgumentNullException(nameof(pluto));
+
             if (initialPosition.Location.X < 0 || initialPosition.Location.X >= pluto.Width ||
                 initialPosition.Location.Y < 0 || initialPosition.Location.Y >= pluto.Height)
             {
                 throw new ArgumentOutOfRangeException(nameof(initialPosition), "Rover must be located inside the Pluto");
+            }
+
+            if (IsObstacleInLocation(pluto, initialPosition.Location))
+            {
+                throw new ArgumentException("Landing into an obstacle", nameof(initialPosition));
             }
 
             _pluto = pluto;
@@ -79,7 +85,7 @@ namespace Rover.Library
             {
                 var newPosition = _stepHandlerByCommand[step]();
 
-                if (IsObstacleInTheWay(newPosition.Location))
+                if (IsObstacleInLocation(_pluto, newPosition.Location))
                 {
                     ObstacleInTheWay = Option.Some(newPosition.Location);
                     break;
@@ -89,8 +95,8 @@ namespace Rover.Library
             }
         }
 
-        private bool IsObstacleInTheWay(Location location) =>
-            _pluto.Obstacles.Any(x => x.Equals(location));
+        private static bool IsObstacleInLocation(Pluto pluto, Location location) =>
+            pluto.Obstacles.Any(x => x.Equals(location));
 
         private int NegativeWrap(int position, int size) => position > 0 ? position - 1 : size - 1;
         private int PositiveWrap(int position, int size) => position < size - 1 ? position + 1 : 0;

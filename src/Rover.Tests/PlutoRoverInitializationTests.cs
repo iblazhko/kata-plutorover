@@ -120,7 +120,9 @@ namespace Rover.Tests
 
             // Assert
             exception.Should().NotBeNull();
-            exception.Should().BeOfType<ArgumentOutOfRangeException>();
-            exception.Message.Should().EndWith("Parameter name: location");
-        }    }
+            exception.Should().BeOfType<ArgumentException>();
+            exception.Message.Should().StartWith("Landing into an obstacle");
+            exception.Message.Should().EndWith("Parameter name: initialPosition");
+        }
+    }
 }
