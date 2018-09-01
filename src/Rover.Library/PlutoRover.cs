@@ -9,6 +9,7 @@ namespace Rover.Library
         private readonly Pluto _pluto;
         private Position _position;
         private readonly Dictionary<char, Func<Position>> _stepHandlerByCommand;
+        private readonly Dictionary<Orientation, Func<Position, Position>> _moveForward;
 
         public Position Position => _position;
 
@@ -22,6 +23,14 @@ namespace Rover.Library
                 {'F', MoveForward},
                 {'B', MoveBackward}
             };
+
+            _moveForward = new Dictionary<Orientation, Func<Position, Position>>
+            {
+                { Orientation.N, p => new Position(p.X, p.Y + 1, p.Orientation) },
+                { Orientation.E, p => new Position(p.X + 1, p.Y, p.Orientation) },
+                { Orientation.S, p => new Position(p.X, p.Y - 1, p.Orientation) },
+                { Orientation.W, p => new Position(p.X - 1, p.Y, p.Orientation) }
+            };
         }
 
         public void Move(string command)
@@ -30,7 +39,7 @@ namespace Rover.Library
             _position = _stepHandlerByCommand[step]();
         }
 
-        private Position MoveForward() => new Position(_position.X, _position.Y + 1, _position.Orientation);
+        private Position MoveForward() => _moveForward[_position.Orientation](_position);
         private Position MoveBackward() => new Position(_position.X, _position.Y - 1, _position.Orientation);
     }
 }
