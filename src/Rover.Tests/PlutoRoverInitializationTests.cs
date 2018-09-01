@@ -72,5 +72,21 @@ namespace Rover.Tests
             exception.Message.Should().StartWith("Width must be a positive number");
             exception.Message.Should().EndWith("Parameter name: width");
         }
+
+        [Fact]
+        public void When_PlutoHasInvalidHeight_ExpectException()
+        {
+            // Arrange
+            // N/A
+
+            // Act
+            var exception = Record.Exception(() => new Pluto(10, 0));
+
+            // Assert
+            exception.Should().NotBeNull();
+            exception.Should().BeOfType<ArgumentOutOfRangeException>();
+            exception.Message.Should().StartWith("Height must be a positive number");
+            exception.Message.Should().EndWith("Parameter name: height");
+        }
     }
 }
