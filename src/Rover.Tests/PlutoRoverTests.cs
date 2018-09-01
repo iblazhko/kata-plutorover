@@ -24,7 +24,7 @@ namespace Rover.Tests
         [InlineData("5,5,E", "6,5,E")]
         [InlineData("5,5,W", "4,5,W")]
         [InlineData("5,5,S", "5,4,S")]
-        public void When_MoveForward_Expect_PositionChanged(
+        public void When_MoveForward_Expect_LocationChangedAndOrientationMaintained(
             string initialPosition,
             string expectedFinalPosition) =>
             RunCommand(initialPosition, "F", expectedFinalPosition);
@@ -34,7 +34,7 @@ namespace Rover.Tests
         [InlineData("5,5,E", "4,5,E")]
         [InlineData("5,5,W", "6,5,W")]
         [InlineData("5,5,S", "5,6,S")]
-        public void When_MoveBackward_Expect_PositionChanged(
+        public void When_MoveBackward_Expect_LocationChangedAndOrientationMaintained(
             string initialPosition,
             string expectedFinalPosition) =>
             RunCommand(initialPosition, "B", expectedFinalPosition);
@@ -44,7 +44,7 @@ namespace Rover.Tests
         [InlineData("0,0,E", "0,0,S")]
         [InlineData("0,0,S", "0,0,W")]
         [InlineData("0,0,W", "0,0,N")]
-        public void When_TurnRight_Expect_OrientationChanged(
+        public void When_TurnRight_Expect_OrientationChangedAndLocationMaintained(
             string initialPosition,
             string expectedFinalPosition) =>
             RunCommand(initialPosition, "R", expectedFinalPosition);
@@ -54,7 +54,7 @@ namespace Rover.Tests
         [InlineData("0,0,W", "0,0,S")]
         [InlineData("0,0,S", "0,0,E")]
         [InlineData("0,0,E", "0,0,N")]
-        public void When_TurnLeft_Expect_OrientationChanged(
+        public void When_TurnLeft_Expect_OrientationChangedAndLocationMaintained(
             string initialPosition,
             string expectedFinalPosition) =>
             RunCommand(initialPosition, "L", expectedFinalPosition);
@@ -68,7 +68,7 @@ namespace Rover.Tests
         [InlineData("5,9,S", "B", "5,0,S")]
         [InlineData("0,1,W", "F", "9,1,W")]
         [InlineData("9,0,W", "B", "0,0,W")]
-        public void When_MoveOverBorder_Expect_LocationWrapped(
+        public void When_MoveOverBorder_Expect_LocationWrappedAndOrientationMaintained(
             string initialPosition,
             string command,
             string expectedFinalPosition) =>
