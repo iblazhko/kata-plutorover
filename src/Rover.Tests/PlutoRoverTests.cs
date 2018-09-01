@@ -74,6 +74,10 @@ namespace Rover.Tests
             string expectedFinalPosition) =>
             RunCommand(initialPosition, command, expectedFinalPosition, 10, 10);
 
+        [Fact]
+        public void When_MultiStepCommand_Expect_AllStepsExecuted() =>
+            RunCommand("0,0,N", "FFBBFRFLRLFR", "1,2,E");
+
         private void RunCommand(
             string initialPosition,
             string command,
