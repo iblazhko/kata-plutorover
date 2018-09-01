@@ -3,10 +3,11 @@
 This repository demonstrates TDD approach to implementing a solution.
 Each commit in the `master` branch corresponds to steps of the TDD cycle.
 
-- Commits marked `Red` are for the Red phase where we have a failing test.
+- Commits marked `Red` are for the Red phase where we have a failing test
+  declaring the new functionality or a change we are going to implement.
 - Commits marked `Green` are for the Green phase where we have implemented a
   minimal change to make the failing test pass.
-- Commits marked `Refactor` are for the Green phase where we can refactor
+- Commits marked `Refactor` are for the Green phase where we are refactoring
   working solution without changing any functionality.
 
 
