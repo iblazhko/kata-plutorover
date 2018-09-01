@@ -9,8 +9,8 @@ namespace Rover.Library
         private readonly Pluto _pluto;
         private Position _position;
         private readonly Dictionary<char, Func<Position>> _stepHandlerByCommand;
-        private readonly Dictionary<Orientation, Func<Position, Position>> _moveForward;
-        private readonly Dictionary<Orientation, Func<Position, Position>> _moveBackward;
+        private readonly Dictionary<Orientation, Func<Location, Location>> _moveForward;
+        private readonly Dictionary<Orientation, Func<Location, Location>> _moveBackward;
         private readonly Dictionary<Orientation, Orientation> _turnRight;
         private readonly Dictionary<Orientation, Orientation> _turnLeft;
 
@@ -29,20 +29,20 @@ namespace Rover.Library
                 {'L', TurnLeft}
             };
 
-            _moveForward = new Dictionary<Orientation, Func<Position, Position>>
+            _moveForward = new Dictionary<Orientation, Func<Location, Location>>
             {
-                { Orientation.N, p => new Position(p.X, p.Y < _pluto.Height-1 ? p.Y + 1 : 0, p.Orientation) },
-                { Orientation.E, p => new Position(p.X < _pluto.Width-1 ? p.X + 1 : 0, p.Y, p.Orientation) },
-                { Orientation.S, p => new Position(p.X, p.Y > 0 ? p.Y - 1 : _pluto.Height-1, p.Orientation) },
-                { Orientation.W, p => new Position(p.X > 0 ? p.X - 1 : _pluto.Width-1, p.Y, p.Orientation) }
+                { Orientation.N, p => new Location(p.X, p.Y < _pluto.Height-1 ? p.Y + 1 : 0) },
+                { Orientation.E, p => new Location(p.X < _pluto.Width-1 ? p.X + 1 : 0, p.Y) },
+                { Orientation.S, p => new Location(p.X, p.Y > 0 ? p.Y - 1 : _pluto.Height-1) },
+                { Orientation.W, p => new Location(p.X > 0 ? p.X - 1 : _pluto.Width-1, p.Y) }
             };
 
-            _moveBackward = new Dictionary<Orientation, Func<Position, Position>>
+            _moveBackward = new Dictionary<Orientation, Func<Location, Location>>
             {
-                { Orientation.N, p => new Position(p.X, p.Y > 0 ? p.Y - 1 : _pluto.Height-1, p.Orientation) },
-                { Orientation.E, p => new Position(p.X > 0 ? p.X - 1 : _pluto.Width-1, p.Y, p.Orientation) },
-                { Orientation.S, p => new Position(p.X, p.Y < _pluto.Height-1 ? p.Y + 1 : 0, p.Orientation) },
-                { Orientation.W, p => new Position(p.X < _pluto.Width-1 ? p.X + 1 : 0, p.Y, p.Orientation) }
+                { Orientation.N, p => new Location(p.X, p.Y > 0 ? p.Y - 1 : _pluto.Height-1) },
+                { Orientation.E, p => new Location(p.X > 0 ? p.X - 1 : _pluto.Width-1, p.Y) },
+                { Orientation.S, p => new Location(p.X, p.Y < _pluto.Height-1 ? p.Y + 1 : 0) },
+                { Orientation.W, p => new Location(p.X < _pluto.Width-1 ? p.X + 1 : 0, p.Y) }
             };
 
             _turnRight = new Dictionary<Orientation, Orientation>
@@ -68,9 +68,9 @@ namespace Rover.Library
             _position = _stepHandlerByCommand[step]();
         }
 
-        private Position MoveForward() => _moveForward[_position.Orientation](_position);
-        private Position MoveBackward() => _moveBackward[_position.Orientation](_position);
-        private Position TurnRight() => new Position(_position.X, _position.Y, _turnRight[_position.Orientation]);
-        private Position TurnLeft() => new Position(_position.X, _position.Y, _turnLeft[_position.Orientation]);
+        private Position MoveForward() => new Position(_moveForward[_position.Orientation](_position.Location), _position.Orientation);
+        private Position MoveBackward() => new Position(_moveBackward[_position.Orientation](_position.Location), _position.Orientation);
+        private Position TurnRight() => new Position(_position.Location, _turnRight[_position.Orientation]);
+        private Position TurnLeft() => new Position(_position.Location, _turnLeft[_position.Orientation]);
     }
 }

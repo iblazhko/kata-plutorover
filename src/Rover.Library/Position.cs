@@ -4,25 +4,22 @@ namespace Rover.Library
 {
     public struct Position
     {
-        public int X { get; }
-        public int Y { get; }
+        public Location Location { get; }
         public Orientation Orientation { get; }
 
-        public Position(int x, int y, Orientation orientation)
+        public Position(Location location, Orientation orientation)
         {
-            X = x;
-            Y = y;
+            Location = location;
             Orientation = orientation;
         }
 
         public Position(string position)
         {
             var parts = position.Split(',');
-            X = int.Parse(parts[0]);
-            Y = int.Parse(parts[1]);
+            Location = new Location(int.Parse(parts[0]), int.Parse(parts[1]));
             Orientation = (Orientation)Enum.Parse(typeof(Orientation), parts[2], true);
         }
 
-        public override string ToString() => $"{X},{Y},{Orientation}";
+        public override string ToString() => $"{Location.X},{Location.Y},{Orientation}";
     }
 }
