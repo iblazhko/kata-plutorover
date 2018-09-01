@@ -10,6 +10,7 @@ namespace Rover.Library
         private Position _position;
         private readonly Dictionary<char, Func<Position>> _stepHandlerByCommand;
         private readonly Dictionary<Orientation, Func<Position, Position>> _moveForward;
+        private readonly Dictionary<Orientation, Func<Position, Position>> _moveBackward;
 
         public Position Position => _position;
 
@@ -31,6 +32,14 @@ namespace Rover.Library
                 { Orientation.S, p => new Position(p.X, p.Y - 1, p.Orientation) },
                 { Orientation.W, p => new Position(p.X - 1, p.Y, p.Orientation) }
             };
+
+            _moveBackward = new Dictionary<Orientation, Func<Position, Position>>
+            {
+                { Orientation.N, p => new Position(p.X, p.Y - 1, p.Orientation) },
+                { Orientation.E, p => new Position(p.X - 1, p.Y, p.Orientation) },
+                { Orientation.S, p => new Position(p.X, p.Y + 1, p.Orientation) },
+                { Orientation.W, p => new Position(p.X + 1, p.Y, p.Orientation) }
+            };
         }
 
         public void Move(string command)
@@ -40,6 +49,6 @@ namespace Rover.Library
         }
 
         private Position MoveForward() => _moveForward[_position.Orientation](_position);
-        private Position MoveBackward() => new Position(_position.X, _position.Y - 1, _position.Orientation);
+        private Position MoveBackward() => _moveBackward[_position.Orientation](_position);
     }
 }
