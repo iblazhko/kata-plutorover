@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Rover.Library
@@ -17,6 +18,8 @@ namespace Rover.Library
 
         public Pluto(int width, int height, IEnumerable<Location> obstacles)
         {
+            if (width <=0) throw new ArgumentOutOfRangeException(nameof(width), "Width must be a positive number");
+
             Width = width;
             Height = height;
             Obstacles = new HashSet<Location>(obstacles);

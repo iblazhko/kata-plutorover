@@ -69,6 +69,7 @@ namespace Rover.Tests
             // Assert
             exception.Should().NotBeNull();
             exception.Should().BeOfType<ArgumentOutOfRangeException>();
+            exception.Message.Should().StartWith("Width must be a positive number");
             exception.Message.Should().EndWith("Parameter name: width");
         }
     }
