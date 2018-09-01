@@ -1,5 +1,17 @@
 # Pluto Rover Kata
 
+This repository demonstrates TDD approach to implementing a solution.
+Each commit in the `master` branch corresponds to steps of the TDD cycle.
+
+- Commits marked `Red` are for the Red phase where we have a failing test.
+- Commits marked `Green` are for the Green phase where we have implemented a
+  minimal change to make the failing test pass.
+- Commits marked `Refactor` are for the Green phase where we can refactor
+  working solution without changing any functionality.
+
+
+## The Kata
+
 After NASA's New Horizon successfully flew past Pluto, they now plan to land
 a Pluto Rover to further investigate the surface. You are responsible for
 developing an API that will allow the Rover to move around the planet.
@@ -32,7 +44,7 @@ Here is an example:
 - Let's say that the rover is located at `(0,0)` facing North on a 100x100 grid.
 - Given the command `FFRFF` would put the rover at `(2,2)` facing East.
 
-## Tips!  
+### Tips!  
 
 - Don't worry about the structure of the rover. Let the structure evolve as you
 add more tests.
