@@ -20,7 +20,7 @@ namespace Rover.Tests
         }
 
         [Fact]
-        public void When_MoveForwardOneStep_Expect_PositionChanged()
+        public void When_MoveForward_Expect_PositionChanged()
         {
             // Arrange
             var pluto = new Pluto(100, 100);

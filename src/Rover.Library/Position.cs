@@ -1,3 +1,5 @@
+using System;
+
 namespace Rover.Library
 {
     public struct Position
@@ -12,5 +14,15 @@ namespace Rover.Library
             Y = y;
             Orientation = orientation;
         }
+
+        public Position(string position)
+        {
+            var parts = position.Split(',');
+            X = int.Parse(parts[0]);
+            Y = int.Parse(parts[1]);
+            Orientation = (Orientation)Enum.Parse(typeof(Orientation), parts[2], true);
+        }
+
+        public override string ToString() => $"{X},{Y},{Orientation}";
     }
 }
