@@ -31,18 +31,18 @@ namespace Rover.Library
 
             _moveForward = new Dictionary<Orientation, Func<Location, Location>>
             {
-                { Orientation.N, p => new Location(p.X, p.Y < _pluto.Height-1 ? p.Y + 1 : 0) },
-                { Orientation.E, p => new Location(p.X < _pluto.Width-1 ? p.X + 1 : 0, p.Y) },
-                { Orientation.S, p => new Location(p.X, p.Y > 0 ? p.Y - 1 : _pluto.Height-1) },
-                { Orientation.W, p => new Location(p.X > 0 ? p.X - 1 : _pluto.Width-1, p.Y) }
+                { Orientation.N, l => new Location(l.X, PositiveWrap(l.Y, _pluto.Width)) },
+                { Orientation.E, l => new Location(PositiveWrap(l.X, _pluto.Width), l.Y) },
+                { Orientation.S, l => new Location(l.X, NegativeWrap(l.Y, _pluto.Height)) },
+                { Orientation.W, l => new Location(NegativeWrap(l.X, _pluto.Width), l.Y) }
             };
 
             _moveBackward = new Dictionary<Orientation, Func<Location, Location>>
             {
-                { Orientation.N, p => new Location(p.X, p.Y > 0 ? p.Y - 1 : _pluto.Height-1) },
-                { Orientation.E, p => new Location(p.X > 0 ? p.X - 1 : _pluto.Width-1, p.Y) },
-                { Orientation.S, p => new Location(p.X, p.Y < _pluto.Height-1 ? p.Y + 1 : 0) },
-                { Orientation.W, p => new Location(p.X < _pluto.Width-1 ? p.X + 1 : 0, p.Y) }
+                { Orientation.N, l => new Location(l.X, NegativeWrap(l.Y, _pluto.Width)) },
+                { Orientation.E, l => new Location(NegativeWrap(l.X, _pluto.Width), l.Y) },
+                { Orientation.S, l => new Location(l.X, PositiveWrap(l.Y, _pluto.Width)) },
+                { Orientation.W, l => new Location(PositiveWrap(l.X, _pluto.Width), l.Y) }
             };
 
             _turnRight = new Dictionary<Orientation, Orientation>
@@ -67,6 +67,9 @@ namespace Rover.Library
             var step = command.First();
             _position = _stepHandlerByCommand[step]();
         }
+
+        private int NegativeWrap(int position, int size) => position > 0 ? position - 1 : size - 1;
+        private int PositiveWrap(int position, int size) => position < size - 1 ? position + 1 : 0;
 
         private Position MoveForward() => new Position(_moveForward[_position.Orientation](_position.Location), _position.Orientation);
         private Position MoveBackward() => new Position(_moveBackward[_position.Orientation](_position.Location), _position.Orientation);
