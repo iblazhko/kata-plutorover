@@ -19,19 +19,25 @@ namespace Rover.Tests
             exception.Should().BeNull();
         }
 
-        [Fact]
-        public void When_MoveForward_Expect_PositionChanged()
+        [Theory]
+        [InlineData("0,0,N", "0,1,N")]
+        [InlineData("5,5,E", "6,5,E")]
+        [InlineData("5,5,W", "4,5,W")]
+        [InlineData("5,5,S", "5,4,S")]
+        public void When_MoveForward_Expect_PositionChanged(
+            string initialPosition,
+            string expectedFinalPosition)
         {
             // Arrange
             var pluto = new Pluto(100, 100);
-            var rover = new PlutoRover(pluto, new Position("0,0,N"));
+            var rover = new PlutoRover(pluto, new Position(initialPosition));
 
             // Act
             rover.Move("F");
 
             // Assert
             rover.Position.ToString()
-                .Should().Be("0,1,N");
+                .Should().Be(expectedFinalPosition);
         }
 
         [Fact]
