@@ -21,6 +21,7 @@ namespace Rover.Library
 
         public PlutoRover(Pluto pluto, Position initialPosition)
         {
+            if (pluto == null) throw new ArgumentNullException(nameof(pluto));
             if (initialPosition.Location.X < 0 || initialPosition.Location.X >= pluto.Width ||
                 initialPosition.Location.Y < 0 || initialPosition.Location.Y >= pluto.Height)
             {
