@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Optional;
 using Rover.Library;
 using Xunit;
 
@@ -105,7 +106,23 @@ namespace Rover.Tests
             rover.Move("FF");
 
             // Assert
-            Assert.Equal(rover.ObstacleInTheWay, obstacleLocation);
+            // Note: not using Fluent assertion (.Should().Be(...)) - it is not compatible with the Option type
+            Assert.Equal(rover.ObstacleInTheWay, Option.Some(obstacleLocation));
+        }
+
+        [Fact]
+        public void When_ThereAreNoObstaclesInTheWay_Expect_ReportNone()
+        {
+            // Arrange
+            var pluto = new Pluto(100, 100);
+            var rover = new PlutoRover(pluto, new Position(new Location(0, 0), Orientation.N));
+
+            // Act
+            rover.Move("FF");
+
+            // Assert
+            // Note: not using Fluent assertion (.Should().Be(...)) - it is not compatible with the Option type
+            Assert.Equal(rover.ObstacleInTheWay, Option.None<Location>());
         }
 
         private void RunCommand(

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Optional;
 
 namespace Rover.Library
 {
     public class PlutoRover
     {
+        private static readonly Option<Location> NoObstacles = Option.None<Location>();
         private readonly Pluto _pluto;
         private Position _position;
         private readonly Dictionary<char, Func<Position>> _stepHandlerByCommand;
@@ -15,6 +17,7 @@ namespace Rover.Library
         private readonly Dictionary<Orientation, Orientation> _turnLeft;
 
         public Position Position => _position;
+        public Option<Location> ObstacleInTheWay { get; private set; }
 
         public PlutoRover(Pluto pluto, Position initialPosition)
         {
@@ -64,10 +67,17 @@ namespace Rover.Library
 
         public void Move(string command)
         {
+            ObstacleInTheWay = NoObstacles;
             foreach (var step in command)
             {
                 var newPosition = _stepHandlerByCommand[step]();
-                if (IsObstacleInTheWay(newPosition.Location)) break;
+
+                if (IsObstacleInTheWay(newPosition.Location))
+                {
+                    ObstacleInTheWay = Option.Some(newPosition.Location);
+                    break;
+                }
+
                 _position = newPosition;
             }
         }
