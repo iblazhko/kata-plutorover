@@ -59,17 +59,30 @@ namespace Rover.Tests
             string expectedFinalPosition) =>
             RunCommand(initialPosition, "L", expectedFinalPosition);
 
-        [Fact]
-        public void When_MoveOverBorder_Expect_LocationWrapped() =>
-            RunCommand("0,99,N", "F", "0,0,N");
+        [Theory]
+        [InlineData("0,9,N", "F", "0,0,N")]
+        [InlineData("0,0,N", "B", "0,9,N")]
+        [InlineData("9,5,E", "F", "0,5,E")]
+        [InlineData("0,5,E", "B", "9,5,E")]
+        [InlineData("5,0,S", "F", "5,9,S")]
+        [InlineData("5,9,S", "B", "5,0,S")]
+        [InlineData("0,1,W", "F", "9,1,W")]
+        [InlineData("0,9,W", "B", "0,0,W")]
+        public void When_MoveOverBorder_Expect_LocationWrapped(
+            string initialPosition,
+            string command,
+            string expectedFinalPosition) =>
+            RunCommand(initialPosition, command, expectedFinalPosition, 10, 10);
 
         private void RunCommand(
             string initialPosition,
             string command,
-            string expectedFinalPosition)
+            string expectedFinalPosition,
+            int plutoWidth = 100,
+            int plutoHeight = 100)
         {
             // Arrange
-            var pluto = new Pluto(100, 100);
+            var pluto = new Pluto(plutoWidth, plutoHeight);
             var rover = new PlutoRover(pluto, new Position(initialPosition));
 
             // Act
