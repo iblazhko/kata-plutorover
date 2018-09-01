@@ -107,5 +107,20 @@ namespace Rover.Tests
             exception.Should().BeOfType<ArgumentNullException>();
             exception.Message.Should().EndWith("Parameter name: obstacles");
         }
-    }
+
+        [Fact]
+        public void When_TryingToLandARoverIntoObstacle_ExpectException()
+        {
+            // Arrange
+            var obstacle = new Location(1, 1);
+            var pluto = new Pluto(10, 10, new [] { obstacle });
+
+            // Act
+            var exception = Record.Exception(() => new PlutoRover(pluto, new Position(obstacle, Orientation.N)));
+
+            // Assert
+            exception.Should().NotBeNull();
+            exception.Should().BeOfType<ArgumentOutOfRangeException>();
+            exception.Message.Should().EndWith("Parameter name: location");
+        }    }
 }
