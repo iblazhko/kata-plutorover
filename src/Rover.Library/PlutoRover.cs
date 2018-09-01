@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rover.Library
@@ -6,26 +8,29 @@ namespace Rover.Library
     {
         private readonly Pluto _pluto;
         private Position _position;
+        private readonly Dictionary<char, Func<Position>> _stepHandlerByCommand;
+
         public Position Position => _position;
 
         public PlutoRover(Pluto pluto, Position initialPosition)
         {
             _pluto = pluto;
             _position = initialPosition;
+
+            _stepHandlerByCommand = new Dictionary<char, Func<Position>>
+            {
+                {'F', MoveForward},
+                {'B', MoveBackward}
+            };
         }
 
         public void Move(string command)
         {
             var step = command.First();
-            switch (step)
-            {
-                case 'F':
-                    _position = new Position(_position.X, _position.Y+1, _position.Orientation);
-                    break;
-                case 'B':
-                    _position = new Position(_position.X, _position.Y-1, _position.Orientation);
-                    break;
-            }
+            _position = _stepHandlerByCommand[step]();
         }
+
+        private Position MoveForward() => new Position(_position.X, _position.Y + 1, _position.Orientation);
+        private Position MoveBackward() => new Position(_position.X, _position.Y - 1, _position.Orientation);
     }
 }
