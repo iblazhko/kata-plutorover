@@ -93,6 +93,21 @@ namespace Rover.Tests
                 .Should().Be("0,1,N");
         }
 
+        [Fact]
+        public void When_ThereIsAnObstacleInTheWay_Expect_ReportTheObstacleLocation()
+        {
+            // Arrange
+            var obstacleLocation = new Location(0, 2);
+            var pluto = new Pluto(100, 100, new [] { obstacleLocation });
+            var rover = new PlutoRover(pluto, new Position(new Location(0, 0), Orientation.N));
+
+            // Act
+            rover.Move("FF");
+
+            // Assert
+            Assert.Equal(rover.ObstacleInTheWay, obstacleLocation);
+        }
+
         private void RunCommand(
             string initialPosition,
             string command,
