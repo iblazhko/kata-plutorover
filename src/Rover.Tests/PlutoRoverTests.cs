@@ -67,7 +67,7 @@ namespace Rover.Tests
         [InlineData("5,0,S", "F", "5,9,S")]
         [InlineData("5,9,S", "B", "5,0,S")]
         [InlineData("0,1,W", "F", "9,1,W")]
-        [InlineData("0,9,W", "B", "0,0,W")]
+        [InlineData("9,0,W", "B", "0,0,W")]
         public void When_MoveOverBorder_Expect_LocationWrapped(
             string initialPosition,
             string command,
