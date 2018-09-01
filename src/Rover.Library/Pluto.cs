@@ -19,6 +19,7 @@ namespace Rover.Library
         public Pluto(int width, int height, IEnumerable<Location> obstacles)
         {
             if (width <=0) throw new ArgumentOutOfRangeException(nameof(width), "Width must be a positive number");
+            if (height <=0) throw new ArgumentOutOfRangeException(nameof(height), "Height must be a positive number");
 
             Width = width;
             Height = height;
