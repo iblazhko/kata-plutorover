@@ -78,6 +78,21 @@ namespace Rover.Tests
         public void When_MultiStepCommand_Expect_AllStepsExecuted() =>
             RunCommand("0,0,N", "FFBBFRFLRLFR", "1,2,E");
 
+        [Fact]
+        public void When_ThereIsAnObstacleInTheWay_Expect_StopAtTheObstacle()
+        {
+            // Arrange
+            var pluto = new Pluto(100, 100, new [] { new Location(0, 2) });
+            var rover = new PlutoRover(pluto, new Position(new Location(0, 0), Orientation.N));
+
+            // Act
+            rover.Move("FF");
+
+            // Assert
+            rover.Position.ToString()
+                .Should().Be("0,1,N");
+        }
+
         private void RunCommand(
             string initialPosition,
             string command,
