@@ -66,9 +66,14 @@ namespace Rover.Library
         {
             foreach (var step in command)
             {
-                _position = _stepHandlerByCommand[step]();
+                var newPosition = _stepHandlerByCommand[step]();
+                if (IsObstacleInTheWay(newPosition.Location)) break;
+                _position = newPosition;
             }
         }
+
+        private bool IsObstacleInTheWay(Location location) =>
+            _pluto.Obstacles.Any(x => x.Equals(location));
 
         private int NegativeWrap(int position, int size) => position > 0 ? position - 1 : size - 1;
         private int PositiveWrap(int position, int size) => position < size - 1 ? position + 1 : 0;
