@@ -76,5 +76,20 @@ namespace Rover.Tests
             rover.Position.ToString()
                 .Should().Be("0,0,E");
         }
+
+        [Fact]
+        public void When_TurnLeft_Expect_OrientationChanged()
+        {
+            // Arrange
+            var pluto = new Pluto(100, 100);
+            var rover = new PlutoRover(pluto, new Position("0,0,N"));
+
+            // Act
+            rover.Move("L");
+
+            // Assert
+            rover.Position.ToString()
+                .Should().Be("0,0,W");
+        }
     }
 }
