@@ -61,20 +61,25 @@ namespace Rover.Tests
                 .Should().Be(expectedFinalPosition);
         }
 
-
-        [Fact]
-        public void When_TurnRight_Expect_OrientationChanged()
+        [Theory]
+        [InlineData("0,0,N", "0,0,E")]
+        [InlineData("0,0,E", "0,0,S")]
+        [InlineData("0,0,S", "0,0,W")]
+        [InlineData("0,0,W", "0,0,N")]
+        public void When_TurnRight_Expect_OrientationChanged(
+            string initialPosition,
+            string expectedFinalPosition)
         {
             // Arrange
             var pluto = new Pluto(100, 100);
-            var rover = new PlutoRover(pluto, new Position("0,0,N"));
+            var rover = new PlutoRover(pluto, new Position(initialPosition));
 
             // Act
             rover.Move("R");
 
             // Assert
             rover.Position.ToString()
-                .Should().Be("0,0,E");
+                .Should().Be(expectedFinalPosition);
         }
 
         [Fact]
